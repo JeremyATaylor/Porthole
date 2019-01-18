@@ -37,7 +37,7 @@ function [clusterSize, clusterMaxima, clusterPeak] = ph_get_peaks(thisData)
         clusterPeakVector = squeeze(max(max(clusterDataVolume)));
 
         % Find time index where global maxima occurs
-        [m,i] = max(clusterPeakVector);
+        [~,i] = max(clusterPeakVector);
         clusterPeak(c) = i;
 
     end

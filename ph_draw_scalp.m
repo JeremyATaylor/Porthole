@@ -35,8 +35,8 @@ function ph_draw_scalp(xDim,yDim,zDim,scalpShape)
     xMax = 2*a;
     
     if zDim == 0.001
-        lineWidth = 1.5;                    
-        lineColour = [0.25 0.25 0.25];
+        lineWidth = 2;                    
+        lineColour = [0.3 0.3 0.3];
     else
         lineWidth = 1;                    
         lineColour = [0.5 0.5 0.5];

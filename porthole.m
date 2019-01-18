@@ -84,7 +84,7 @@ function porthole(varargin)
     end
     
     h_fig = figure('Position', figureDims, 'MenuBar','none', ...
-        'DockControls','off', 'ToolBar','none'); 
+        'DockControls','off', 'ToolBar','none','Name','Porthole'); 
     movegui(h_fig,'center');                    % Position window 
     axis off manual                  
     axis([-10 xMax+10 -8 yDim+10 -0.1 xDim])    % Set bounds of plot 
@@ -164,7 +164,7 @@ function porthole(varargin)
     
     % Animation Parameters
     RT = 0.25;                  % Repeat time between images (seconds)
-    fps = 8;                    % Animation speed (frames per second)
+    fps = 4;                    % Animation speed (frames per second)
     totalFrames = RT*fps;       % Total frames per image
     
     % Data Parameters
@@ -184,6 +184,8 @@ function porthole(varargin)
     imageValues = {'','','','','','','','',''};
     timeUnits = ' ms';
     imageUnits = cat(2,' / ',num2str(totalImages));
+    
+    load('ph_colours_64_warm.mat','colourMap');
     
     tic;    % Start the clock
         
@@ -243,10 +245,18 @@ function porthole(varargin)
             % Display Current Image
             for i = 1:xDim
                 for j = 1:yDim
+                    
                     % Read current value, assign colour and write to pixel
                     thisValue = (thisData(i,j,currentImage) - ...
                         phParams.dataMin)/dataDiff;
-                    thisColour = ph_get_colour(thisValue);
+                    
+                    % Set colour for current pixel
+                    if thisValue == 0 || isnan(thisValue)
+                        thisColour = [0 0 0];
+                    else 
+                        thisColour = colourMap(ceil(thisValue*64),:); 
+                    end              
+                        
                     set(hp(i,j),'FaceColor', thisColour);
                 end
             end
@@ -324,10 +334,20 @@ function porthole(varargin)
                             phParams.dataMin)/dataDiff;
                         nextValue = (thisData(i,j,thisImage+1) - ...
                             phParams.dataMin)/dataDiff;
+
+                        % Set colour for current pixel
+                        if thisValue == 0 || isnan(thisValue)
+                            thisColour = [0 0 0];
+                        else 
+                            thisColour = colourMap(ceil(thisValue*64),:); 
+                        end
                         
-                        % Look up associated colours
-                        thisColour = ph_get_colour(thisValue);
-                        nextColour = ph_get_colour(nextValue);
+                        % Set colour for next pixel
+                        if nextValue == 0 || isnan(nextValue)
+                            nextColour = [0 0 0];
+                        else 
+                            nextColour = colourMap(ceil(nextValue*64),:); 
+                        end
 
                         % Perform colour interpolation
                         C = nextColour - thisColour;
